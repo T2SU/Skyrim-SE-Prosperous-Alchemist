@@ -217,9 +217,10 @@ namespace alchemist {
 	class Scaleform_RegisterGetBestRecipeNameHandler : public GFxFunctionHandler {
 	public:
 		virtual void Invoke(Args *args) {
-			if (args->args[0].GetType() == GFxValue::kType_String) {
+			string alchemist_result = "";
+			if (args && args->numArgs && args->numArgs > 0) {
 				string craft_description = *(args->args[0].data.managedString);
-				if (craft_description == "Alchemy: Combine ingredients to make potions" && g_thePlayer) {
+				if (craft_description.find("Alchemy") != string::npos && g_thePlayer) {
 					//time_t start = time(NULL);
 					initAlchemist();
 					//stressTest();
@@ -229,15 +230,16 @@ namespace alchemist {
 						player.lastState = player.state;
 						makePotions();
 					}
+					alchemist_result = costliestPotion.description;
 					//time_t end = time(NULL);
 					//_LOG(str::fromInt(end - start) + " seconds");
 					//_LOG(str::fromInt(ingredients.size()) + " ingredients");
-				} else {
-					costliestPotion = Potion(0, "");
 				}
+			}
+			if (args && args->result) {
 				args->result->CleanManaged();
 				args->result->type = GFxValue::kType_String;
-				args->result->data.string = costliestPotion.description.c_str();
+				args->result->data.string = alchemist_result.c_str();
 			}
 		}
 	};
@@ -245,7 +247,7 @@ namespace alchemist {
 	class Scaleform_RegisterGetBestRecipeDescriptionHandler : public GFxFunctionHandler	{
 	public:
 		virtual void Invoke(Args *args) {
-			if (args->args[0].GetType() == GFxValue::kType_String) {
+			if (args && args->result) {
 				args->result->CleanManaged();
 				args->result->type = GFxValue::kType_String;
 				args->result->data.string = "";

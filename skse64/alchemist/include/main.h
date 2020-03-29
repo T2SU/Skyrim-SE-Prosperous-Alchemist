@@ -25,8 +25,11 @@ namespace alchemist {
 		_MESSAGE(s.c_str());
 	}
 
-	float round_toward_zero(float f) {
-		return ceil(f - 0.5);
+	float round_skyrim(float f) {
+		//if (...figure out why skyrim sometimes rounds toward zero) {
+			//return ceil(f - 0.5); // round toward zero
+		//} // else
+		return floor(f + 0.5); // round away from zero
 	}
 
 	class Effect {
@@ -221,8 +224,8 @@ namespace alchemist {
 		}
 
 		void setState() {
-			state = str::fromInt(alchemyLevel) + str::fromInt(fortifyAlchemyLevel) + str::fromInt(alchemistPerkLevel) + str::fromInt(hasPerkPurity) +
-				str::fromInt(hasPerkPhysician) + str::fromInt(hasPerkBenefactor) + str::fromInt(hasPerkPoisoner) + str::fromInt(hasSeekerOfShadows);
+			state = str::fromInt(alchemyLevel) + "," + str::fromInt(fortifyAlchemyLevel) + "," + str::fromInt(alchemistPerkLevel) + "," + str::fromInt(hasPerkPurity) +
+				"," + str::fromInt(hasPerkPhysician) + "," + str::fromInt(hasPerkBenefactor) + "," + str::fromInt(hasPerkPoisoner) + "," + str::fromInt(hasSeekerOfShadows);
 		}
 
 		Player() {};
@@ -263,7 +266,7 @@ namespace alchemist {
 		float getPerkCalcMagnitude(Effect effect, bool potion) {
 			float magnitude = effect.magnitude;
 			if (!effect.powerAffectsMagnitude) {
-				return round_toward_zero(magnitude);
+				return round_skyrim(magnitude);
 			}
 			float calcMagnitude = magnitude * (player.alchemyLevel / 5 * 0.1 + 4) * (1 + player.alchemistPerkLevel * 20 / 100) * (1 + player.fortifyAlchemyLevel / 100);
 			if (player.hasPerkPhysician && (effect.name == "Restore Health" || effect.name == "Restore Magicka" || effect.name == "Restore Stamina")) {
@@ -277,7 +280,7 @@ namespace alchemist {
 			if (player.hasSeekerOfShadows) {
 				calcMagnitude = calcMagnitude * 1.1;
 			}
-			return round_toward_zero(calcMagnitude);
+			return round_skyrim(calcMagnitude);
 		}
 
 		bool powerAffectsDuration(IngredientItem::EffectItem* effect) {
@@ -297,7 +300,7 @@ namespace alchemist {
 		float getPerkCalcDuration(Effect effect, bool potion) {
 			float duration = effect.duration;
 			if (!effect.powerAffectsDuration) {
-				return round_toward_zero(duration);
+				return round_skyrim(duration);
 			}
 			float calcDuration = duration * (player.alchemyLevel / 5 * 0.1 + 4) * (1 + player.alchemistPerkLevel * 20 / 100) * (1 + player.fortifyAlchemyLevel / 100);
 			if (player.hasPerkPhysician && (effect.name == "Restore Health" || effect.name == "Restore Magicka" || effect.name == "Restore Stamina")) {
@@ -311,7 +314,7 @@ namespace alchemist {
 			if (player.hasSeekerOfShadows) {
 				calcDuration = calcDuration * 1.1;
 			}
-			return round_toward_zero(calcDuration);
+			return round_skyrim(calcDuration);
 		}
 
 		float getCost(IngredientItem::EffectItem *effect) {
