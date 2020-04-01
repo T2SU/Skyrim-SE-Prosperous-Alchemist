@@ -137,14 +137,14 @@ namespace alchemist {
 		ExtraContainerChanges *containerChanges = static_cast<ExtraContainerChanges*>((*g_thePlayer)->extraData.GetByType(kExtraData_ContainerChanges));
 		ExtraContainerChanges::Data *containerData = containerChanges ? containerChanges->data : NULL;
 		EntryDataList *objList = containerData->objList;
-		set<Ingredient> ingredientCount;
-		for (int i = 0; i < objList->Count(); ++i) {
-			InventoryEntryData *obj = objList->GetNthItem(i);
-			if (obj->type->formType == kFormType_Ingredient) {
-				string name = CALL_MEMBER_FN(obj, GenerateName)();
-				ingredientCount.insert(Ingredient(name, obj->countDelta));
-			}
-		}
+		//set<Ingredient> ingredientCount;
+		//for (int i = 0; i < objList->Count(); ++i) {
+		//	InventoryEntryData *obj = objList->GetNthItem(i);
+		//	if (obj->type->formType == kFormType_Ingredient) {
+		//		string name = CALL_MEMBER_FN(obj, GenerateName)();
+		//		ingredientCount.insert(Ingredient(name, obj->countDelta));
+		//	}
+		//}
 		VMResultArray<TESForm*> playerForms = papyrusObjectReference::GetContainerForms(*g_thePlayer);
 		ingredients.clear();
 		for (TESForm *form : playerForms) {
@@ -181,9 +181,9 @@ namespace alchemist {
 		for (TESForm *form : playerForms) {
 			if (form->GetFormType() == kFormType_Ingredient) {
 				IngredientItem *ingredient = DYNAMIC_CAST(form, TESForm, IngredientItem);
-				if (!ingredient::isProtected(ingredient, ingredientCount)) {
+				//if (!ingredient::isProtected(ingredient, ingredientCount)) {
 					ingredients.insert(Ingredient(ingredient));
-				}
+				//}
 			}
 		}
 		player.setState();

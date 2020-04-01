@@ -680,6 +680,7 @@ namespace alchemist {
 		float cost;
 		Effect controlEffect;
 		string description;
+		bool impure;
 		string getName() {
 			string title = "Poison of ";
 			if (controlEffect.beneficial) {
@@ -701,7 +702,25 @@ namespace alchemist {
 			effects = e;
 			possibleEffects = pe;
 			controlEffect = ce;
-			cost = c;
+			int beneficial = 0;
+			int harmful = 0;
+			for (auto effect : effects) {
+				if (effect.beneficial) {
+					beneficial++;
+				} else {
+					harmful++;
+				}
+			}
+			if (beneficial > 0 && harmful > 0) {
+				impure = true;
+			} else {
+				impure = false;
+			}
+			if (impure) {
+				cost = c / 10;
+			} else {
+				cost = c;
+			}
 			name = getName();
 		};
 		Potion(int s, Ingredient i1, Ingredient i2, Ingredient i3, set<Effect> e, Effect ce, float c) {
@@ -712,7 +731,25 @@ namespace alchemist {
 			ingredient3 = i3;
 			effects = e;
 			controlEffect = ce;
-			cost = c;
+			int beneficial = 0;
+			int harmful = 0;
+			for (auto effect : effects) {
+				if (effect.beneficial) {
+					beneficial++;
+				} else {
+					harmful++;
+				}
+			}
+			if (beneficial > 0 && harmful > 0) {
+				impure = true;
+			} else {
+				impure = false;
+			}
+			if (impure) {
+				cost = c / 10;
+			} else {
+				cost = c;
+			}
 			name = getName();
 		};
 		Potion(float c, string d) {
