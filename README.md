@@ -1,4 +1,5 @@
-# Prosperous Alchemist SE
+# Prosperous Alchemist SE (Korean)
+* 기존 Alchemist 문자열 대신 '연금술' 문자열이 포함되어도 인식하도록 수정된 버전.
 
 ## Special Thanks
 * [SKSE Team](https://skse.silverlock.org)

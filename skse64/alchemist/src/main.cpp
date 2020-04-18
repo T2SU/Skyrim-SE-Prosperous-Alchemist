@@ -7,6 +7,9 @@
 #include <mutex>
 #include <vector>
 
+#include <codecvt>
+#include <locale>
+
 using std::vector;
 using std::mutex;
 using std::thread;
@@ -21,6 +24,8 @@ namespace alchemist {
 	set<Potion>::iterator potion_it;
 	mutex alchemist_mutex;
 	vector<thread> threads;
+
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8_conv;
 
 	void improvePotion(Potion potion);
 	void getNextPotion() {
@@ -303,20 +308,27 @@ namespace alchemist {
 			string alchemist_result = "";
 			if (args && args->numArgs && args->numArgs > 0) {
 				string craft_description = *(args->args[0].data.managedString);
-				if (craft_description.find("Alchemy") != string::npos && g_thePlayer) {
-					//time_t start = time(NULL);
-					initAlchemist();
-					//stressTest();
-					if (ingredients != lastIngredientList || player.state != player.lastState) {
-						costliestPotion = Potion(0, "No potion recipes are currently available.");
-						lastIngredientList = set<Ingredient>(ingredients);
-						player.lastState = player.state;
-						makePotions();
+				if (g_thePlayer) {
+					auto condition = 
+						craft_description.find("Alchemy") != string::npos ||
+						craft_description.find(utf8_conv.to_bytes(L"연금술")) != string::npos;
+					if (condition) { // 연금술: 포션을 만들기 위해 재료를 조합하기
+						//time_t start = time(NULL);
+						initAlchemist();
+						//stressTest();
+						if (ingredients != lastIngredientList || player.state != player.lastState) {
+							costliestPotion = Potion(0, utf8_conv.to_bytes(L"조합 가능한 포션 레시피가 없음."));
+							lastIngredientList = set<Ingredient>(ingredients);
+							player.lastState = player.state;
+							makePotions();
+						}
+						alchemist_result = costliestPotion.description;
+						_MESSAGE("[RecipeName] Result=[%s]", alchemist_result.c_str());
+						//time_t end = time(NULL);
+						//_LOG(str::fromInt(end - start) + " seconds");
+						//_LOG(str::fromInt(ingredients.size()) + " ingredients");
 					}
-					alchemist_result = costliestPotion.description;
-					//time_t end = time(NULL);
-					//_LOG(str::fromInt(end - start) + " seconds");
-					//_LOG(str::fromInt(ingredients.size()) + " ingredients");
+
 				}
 			}
 			if (args && args->result) {
