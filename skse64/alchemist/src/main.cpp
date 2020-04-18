@@ -312,7 +312,7 @@ namespace alchemist {
 					auto condition = 
 						craft_description.find("Alchemy") != string::npos ||
 						craft_description.find(utf8_conv.to_bytes(L"연금술")) != string::npos;
-					if (condition) { // 연금술: 포션을 만들기 위해 재료를 조합하기
+					if (condition) {
 						//time_t start = time(NULL);
 						initAlchemist();
 						//stressTest();
@@ -323,7 +323,7 @@ namespace alchemist {
 							makePotions();
 						}
 						alchemist_result = costliestPotion.description;
-						_MESSAGE("[RecipeName] Result=[%s]", alchemist_result.c_str());
+						// _MESSAGE("[RecipeName] Result=[%s]", alchemist_result.c_str());
 						//time_t end = time(NULL);
 						//_LOG(str::fromInt(end - start) + " seconds");
 						//_LOG(str::fromInt(ingredients.size()) + " ingredients");
